@@ -15,8 +15,6 @@ const char* dayNames[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"
 const char* errorString[] = {"OK", "Warning"};
 const char* shiftStrinf[] = {"F", "S", "N"};
 
-
-// Definition of the Scheduler struct
 typedef struct {
 	int  day;
 	char sCaretaker[20];
@@ -26,10 +24,8 @@ typedef struct {
 	int nightshift;
 } entry;
 
-//External Variable for a maximum of one week
 entry entryArray[63];
 
-// Predefinitions of functions
 void mainMenu();
 void createPlan();
 int  loadFile();
@@ -60,8 +56,10 @@ int main()
 
 	saveFile(output);
 
-    system( "read -n 1 -s -p \"Press any Key...\"" );
-    
+    	system( "read -n 1 -s -p \"Press any Key...\"" );
+    	
+	printf("\n");
+	
 	return 0;
 }
 
@@ -70,7 +68,7 @@ void mainMenu()
 {
 	char choice[3] = "";
 	
-    system("clear");
+    	system("clear");
     
 	printf("Select mode: \n");
 
@@ -80,12 +78,13 @@ void mainMenu()
 	
 	fgets(choice, 2, stdin);
 
-	if ((strlen(choice)>0) && (choice[strlen (choice) - 1] == '\n'))
+	if ((strlen(choice)>0) && (choice[strlen (choice) - 1] == '\n')){
 		choice[strlen (choice) - 1] = '\0';
+	}
 
-    fpurge(stdin);
+    	fpurge(stdin);
     
-    system("clear");
+    	system("clear");
     
 	switch (choice[0]) {
 	case '1':
@@ -103,38 +102,37 @@ void mainMenu()
 
 int loadFile()
 {
-	/* FileStream for the Scheduler File */
 	FILE *inputFile;
 
-	/* allocation of the buffer for every line in the File */
 	char *buf = malloc(MAX_CHAR_LEN);
 	char *tmp;
 
-	/* if the space could not be allocaed, return an error */
-	if (buf == NULL) {
+	if(buf == NULL) {
 		printf ("Memory Error\n");
 		return 1;
 	}
 
-	if ( ( inputFile = fopen( "input.dat", "r" ) ) == NULL ) { //Reading a file
+	if((inputFile = fopen( "input.dat", "r" )) == NULL) {
 		printf( "File Error.\n" );
 		return 1;
 	}
 
 	int i = 0;
-	while (fgets(buf, 255, inputFile) != NULL) {
+	while(fgets(buf, 255, inputFile) != NULL) {
+		
 		if(ferror(inputFile)) {
 			break;
 		}
-		if ((strlen(buf)>0) && (buf[strlen (buf) - 1] == '\n'))
+		
+		if((strlen(buf)>0) && (buf[strlen (buf) - 1] == '\n')){
 			buf[strlen (buf) - 1] = '\0';
-
+		}
 
 		tmp = strtok(buf, ";");
-		strcpy( entryArray[i].sCaretaker, tmp);
+		strcpy(entryArray[i].sCaretaker, tmp);
 
 		tmp = strtok(NULL, ";");
-		strcpy(  entryArray[i].sQualification, tmp);
+		strcpy(entryArray[i].sQualification, tmp);
 
 		tmp = strtok(NULL, ";");
 		entryArray[i].sShift = atoi(tmp);
@@ -164,12 +162,13 @@ void createPlan()
 	
 	while(abbruch != 1) {
 		char tmp[MAX_CHAR_LEN];
-		// Eingabe Pfleger
-		printf("Employees name: \n");
+		
+		printf("Enter Employees name: \n");
 		fgets(tmp, 20, stdin);
 
-		if ((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n'))
+		if((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n')){
 			tmp[strlen (tmp) - 1] = '\0';
+		}
 
 		strcpy(entryArray[counter].sCaretaker, tmp);
 
@@ -177,28 +176,28 @@ void createPlan()
 		
 		system("clear");
         
-        //Eingabe Qualification
 		printf("Qualification:\n");
 		printf("Trainee\t\t(1)\n");
 		printf("Assistant\t(2)\n");
 		printf("Degree\t\t(3)\n");
 		fgets(tmp, 20, stdin);
 
-		if ((strlen(tmp)>0) && (tmp[strlen(tmp) - 1] == '\n'))
+		if((strlen(tmp)>0) && (tmp[strlen(tmp) - 1] == '\n')){
 			tmp[strlen(tmp) - 1] = '\0';
+		}
 
-		switch (tmp[0]) {
-		case '1':
-			strcpy(tmp, "Trainee");
-			break;
-		case '2':
-			strcpy(tmp, "Assistant");
-			break;
-		case '3':
-			strcpy(tmp, "Degree");
-			break;
-		default:
-			strcpy(tmp, "Trainee");
+		switch(tmp[0]){
+			case '1':
+				strcpy(tmp, "Trainee");
+				break;
+			case '2':
+				strcpy(tmp, "Assistant");
+				break;
+			case '3':
+				strcpy(tmp, "Degree");
+				break;
+			default:
+				strcpy(tmp, "Trainee");
 		}
 
 		strcpy(entryArray[counter].sQualification, tmp);
@@ -207,27 +206,19 @@ void createPlan()
         
 		system("clear");
 		
-		//Eingabe Shift
 		printf("Shift:\n");
 		printf("Early\t\t(1)\n");
 		printf("Late\t\t(2)\n");
 		printf("Nightshift\t(3)\n");
 		fgets(tmp, 3, stdin);
 
-		if ((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n'))
+		if((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n')){
 			tmp[strlen (tmp) - 1] = '\0';
-
-		switch (tmp[0]) {
-		case '1':
-			strcpy(tmp, "0");
-			break;
-		case '2':
-			strcpy(tmp, "1");
-			break;
-		case '3':
-			strcpy(tmp, "2");
-			break;
-		default:
+		}
+		
+		if(tmp[0]>=1 && tmp[0]<=3){
+			strcpy(tmp, tmp[0]);
+		}else{
 			strcpy(tmp, "0");
 		}
 
@@ -237,7 +228,6 @@ void createPlan()
         
 		system("clear");
         	
-		// Eingabe Weekday
 		printf("Weekday:\n");
 		printf("Monday\t\t(1)\n");
 		printf("Tuesday\t\t(2)\n");
@@ -249,8 +239,9 @@ void createPlan()
 
 		fgets(tmp, 3, stdin);
 
-		if ((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n'))
+		if((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n')){
 			tmp[strlen (tmp) - 1] = '\0';
+		}
 		
 		if(tmp[0]>=1 && tmp[0]<=7){
 			strcpy(tmp-1, "0");
@@ -265,8 +256,9 @@ void createPlan()
 		printf("Add another Entry? (Y/N)\n");
 		fgets(tmp, 2, stdin);
 
-		if ((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n'))
-			tmp[strlen (tmp) - 1] = '\0';
+		if((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n')){
+			tmp[strlen(tmp) - 1] = '\0';
+		}
 			
 		switch(tmp[0])
 		{
@@ -284,7 +276,7 @@ void createPlan()
 				counter++;
 		}
 
-        fpurge(stdin);
+        	fpurge(stdin);
         
 		system("clear");
 	}
@@ -301,8 +293,7 @@ void printSchedule()
 	for (i = 0; i <= sizeof(entryArray); i++) {
 		if (strlen(entryArray[i].sCaretaker) != 0)
 			printf("%s\t\t%s\t%s\t%s\t%s \n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
-		else
-			break;
+		else break;
 	}
 
     system("clear");
@@ -331,10 +322,7 @@ void checkSchedule()
 						}
 
 					}
-				}
-
-				else
-					break;
+				}else break;
 			}
 
 			if (dplVorhanden == 0) {
@@ -357,8 +345,7 @@ void setError(int oneDay, int shift)
 			if(entryArray[i].day == oneDay && entryArray[i].sShift == shift) {
 				entryArray[i].sError = 1;
 			}
-		} else
-			break;
+		} else break;
 	}
 }
 
@@ -368,7 +355,7 @@ int  saveFile(int typ)
 	FILE *outFile;
 	char filename[20];
 
-	switch (typ) {
+	switch(typ) {
 	case 1:
 		strcpy( filename, "output.txt");
 		break;
@@ -380,35 +367,29 @@ int  saveFile(int typ)
 	}
 
 
-	if ( ( outFile = fopen(filename , "w" ) ) == NULL ) {
+	if((outFile = fopen(filename , "w" )) == NULL) {
 		printf( "File could not be opened.\n" );
 		return 1;
 	}
 
 	// Wenn ein HTML File generiert wird
-	if(typ == 2) {
+	if(typ == 2){
 		fprintf(outFile, "<!DOCTYPE html><html><body><h1>Shiftenplan Web</h1><table border='1'>");
 		fprintf(outFile, "<tr><td>Name des Pflegepersonals:</td><td>Qualification:</td><td>Shift:</td><td>Weekday:</td><td>Warning:</td></tr>");
 	}
 
 
 	int i;
-	for(i = 0; i < 64; i++) {
+	for(i = 0; i < 64; i++){
 		//printf("%lu",strlen(entryArray[i].sCaretaker));
 		if(strlen(entryArray[i].sCaretaker) != 0) {
-			switch (typ) {
-				//TXT
+			switch (typ){
 			case 1:
 				fprintf(outFile, "%s\t\t%s\t%s\t%s\t%s\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
 				break;
-
-				//HTML
-			case 2: {
+			case 2: 
 				fprintf(outFile, "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
 				break;
-			}
-
-			//DAT (analog TXT)
 			default:
 				fprintf(outFile, "%s\t\t%s\t%s\t%s\t%s\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
 			}
@@ -431,70 +412,49 @@ void mostNightshift()
 	
 	int i,j,k,l;
 	
-	for (i = 0; i <= sizeof(entryArray); i++) {
-		if (strlen(entryArray[i].sCaretaker) != 0)
+	for(i = 0; i <= sizeof(entryArray); i++){
+		if(strlen(entryArray[i].sCaretaker) != 0)
 		{
-			if (entryArray[i].sShift == 2)
+			if(entryArray[i].sShift == 2)
 			{
 				entryArray[i].nightshift++;
 			}
-		}
-		else
-			break;
+		}else break;
 	}
 	
-	for (j = 0; j <= sizeof(entryArray); j++) {
-		if (strlen(entryArray[j].sCaretaker) != 0)
-		{
-			for(k = 0; k <= sizeof(entryArray); k++)
-			{
-				if (strlen(entryArray[k].sCaretaker) != 0)
-				{
-					if ((strcmp(entryArray[j].sCaretaker, entryArray[k].sCaretaker) == 0) && entryArray[k].nightshift > 0)
-					{
+	for(j = 0; j <= sizeof(entryArray); j++){
+		if(strlen(entryArray[j].sCaretaker) != 0){
+			for(k = 0; k <= sizeof(entryArray); k++){
+				if (strlen(entryArray[k].sCaretaker) != 0){
+					if ((strcmp(entryArray[j].sCaretaker, entryArray[k].sCaretaker) == 0) && entryArray[k].nightshift > 0){
 						entryArray[k].nightshift++;
 					}
 					
-				}
-				else
-					break;
+				}else break;
 			}
-		}
-		else
-			break;
-			
-	
+		}else break;
 	}
 	
 	
-	for (l = 0; l <= sizeof(entryArray); l++) {
-		if (strlen(entryArray[l].sCaretaker) != 0)
-		{
-			if(countMost == 0)
-			{
-			*sMost = entryArray[l].sCaretaker;
-			countMost = entryArray[l].nightshift;
-			}
-			else if(countMost < entryArray[l].nightshift)
-			{
+	for(l = 0; l <= sizeof(entryArray); l++){
+		if (strlen(entryArray[l].sCaretaker) != 0){
+			if(countMost == 0){	{
 				*sMost = entryArray[l].sCaretaker;
-				countMost = entryArray[l].nightshift	;
+				countMost = entryArray[l].nightshift;
+			}else if(countMost < entryArray[l].nightshift){
+				*sMost = entryArray[l].sCaretaker;
+				countMost = entryArray[l].nightshift;
 			}
-			
-		}
-		else
-			break;
+		}else break;
 	}
 	countMost--;
 	printf("The most Nightshifts, has %s with %i times.\n", *sMost, countMost );
-	
 }
 
 int chooseOutputType()
 {
 	char choice[3] = "";
 
-	// Enter the Data (Hand or File)
 	printf("Please choose the output type: \n");
 
 	printf("txt  (1) \n");
@@ -504,11 +464,11 @@ int chooseOutputType()
 	printf("Auswahl: ");
 	fgets(choice, 2, stdin);
 
-	if ((strlen(choice)>0) && (choice[strlen (choice) - 1] == '\n'))
+	if((strlen(choice)>0) && (choice[strlen (choice) - 1] == '\n')){
 		choice[strlen (choice) - 1] = '\0';
-
-	//fflush(stdin);
-    fpurge(stdin);
+	}
+	
+    	fpurge(stdin);
     
 	switch (choice[0]) {
 	case '1':
@@ -520,5 +480,4 @@ int chooseOutputType()
 	default:
 		return 99;
 	}
-
 }
