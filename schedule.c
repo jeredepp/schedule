@@ -173,8 +173,7 @@ void createPlan()
 
 		strcpy(entryArray[counter].sCaretaker, tmp);
 
-		//fflush(stdin);
-        fpurge(stdin);
+        	fpurge(stdin);
 		
 		system("clear");
         
@@ -185,8 +184,8 @@ void createPlan()
 		printf("Degree\t\t(3)\n");
 		fgets(tmp, 20, stdin);
 
-		if ((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n'))
-			tmp[strlen (tmp) - 1] = '\0';
+		if ((strlen(tmp)>0) && (tmp[strlen(tmp) - 1] == '\n'))
+			tmp[strlen(tmp) - 1] = '\0';
 
 		switch (tmp[0]) {
 		case '1':
@@ -204,7 +203,7 @@ void createPlan()
 
 		strcpy(entryArray[counter].sQualification, tmp);
 
-        fpurge(stdin);
+        	fpurge(stdin);
         
 		system("clear");
 		
@@ -234,8 +233,7 @@ void createPlan()
 
 		entryArray[counter].sShift= atoi(tmp);
 
-		//fflush(stdin);
-        fpurge(stdin);
+        	fpurge(stdin);
         
 		system("clear");
         	
@@ -295,6 +293,7 @@ void createPlan()
 			case 'Y':
 			case 'y':
 				abbruch = 0; 
+				counter++;
 			break;
 			case 'N': 
 			case 'n':
@@ -302,6 +301,7 @@ void createPlan()
 			break;
 			default: 
 				abbruch = 0;
+				counter++;
 		}
 
         fpurge(stdin);
@@ -435,10 +435,11 @@ int  saveFile(int typ)
 		}
 
 	}
+	
 	if(typ == 2) {
 		fprintf(outFile, "</table></body></html>");
 	}
-	sleep(2);
+	
 	fclose(outFile);
 	return 0;
 }
