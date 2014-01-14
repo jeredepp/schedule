@@ -218,10 +218,17 @@ void createPlan()
 		
 	
 		
-		if(tmp[0]>=1 && tmp[0]<=3){
-			strcpy(tmp, sizeof(tmp[0])-1);
-		}else{
-			strcpy(tmp, "0");
+		switch (tmp[0]) {
+		      break;
+		    case '2':
+		      strcpy(tmp, "1");
+		      break;
+		    case '3':
+		      strcpy(tmp, "2");
+		      break;
+		    case '1':
+		    default:
+		      strcpy(tmp, "0");
 		}
 
 		entryArray[counter].sShift= atoi(tmp);
@@ -246,11 +253,29 @@ void createPlan()
 		}
 		
 		
-		if(tmp[0]>=1 && tmp[0]<=7){
-			strcpy(tmp, sizeof(tmp[0])-1);
-		}else{
-			strcpy(tmp, "0");
-		}
+		switch (tmp[0]) {
+		     case '2':
+		       strcpy(tmp, "1");
+		       break;
+		     case '3':
+		       strcpy(tmp, "2");
+		      break;
+		     case '4':
+		       strcpy(tmp, "3");
+		       break;
+		     case '5':
+		       strcpy(tmp, "4");
+		       break;
+		     case '6':
+		       strcpy(tmp, "5");
+		       break;
+		     case '7':
+		       strcpy(tmp, "6");
+		       break;
+		     case '1':
+		     default:
+		       strcpy(tmp, "0");
+		 }
 
 		entryArray[counter].day =  atoi(tmp);
 
