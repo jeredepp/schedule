@@ -212,13 +212,14 @@ void createPlan()
 		printf("Nightshift\t(3)\n");
 		fgets(tmp, 3, stdin);
 
-		if((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n')){
-			tmp[strlen (tmp) - 1] = '\0';
+		if((strlen(tmp)>0) && (tmp[strlen(tmp) - 1] == '\n')){
+			tmp[strlen(tmp) - 1] = '\0';
 		}
 		
+	
+		
 		if(tmp[0]>=1 && tmp[0]<=3){
-			int tmpHelp = tmp[0]-1;
-			strcpy(tmp, tmpHelp);
+			strcpy(tmp, sizeof(tmp[0])-1);
 		}else{
 			strcpy(tmp, "0");
 		}
@@ -240,13 +241,13 @@ void createPlan()
 
 		fgets(tmp, 3, stdin);
 
-		if((strlen(tmp)>0) && (tmp[strlen (tmp) - 1] == '\n')){
-			tmp[strlen (tmp) - 1] = '\0';
+		if((strlen(tmp)>0) && (tmp[strlen(tmp) - 1] == '\n')){
+			tmp[strlen(tmp) - 1] = '\0';
 		}
 		
+		
 		if(tmp[0]>=1 && tmp[0]<=7){
-			int tmpHelp = tmp[0]-1;
-			strcpy(tmp, tmpHelp);
+			strcpy(tmp, sizeof(tmp[0])-1);
 		}else{
 			strcpy(tmp, "0");
 		}
@@ -440,7 +441,7 @@ void mostNightshift()
 	
 	for(l = 0; l <= sizeof(entryArray); l++){
 		if (strlen(entryArray[l].sCaretaker) != 0){
-			if(countMost == 0){	{
+			if(countMost == 0){
 				*sMost = entryArray[l].sCaretaker;
 				countMost = entryArray[l].nightshift;
 			}else if(countMost < entryArray[l].nightshift){
