@@ -21,25 +21,27 @@ typedef struct {
 	char sQualification[20];
 	int  sShift;
 	int  sError;
-	int nightshift;
+	int  nightshift;
 } entry;
 
 entry entryArray[63];
 
 void mainMenu();
+void checkSchedule();
+void printSchedule();
 void createPlan();
+void setError(int oneDay, int shift);
+int  chooseOutputType();
+void mostNightshift();
 int  loadFile();
 int  saveFile(int typ);
-void printSchedule();
-void checkSchedule();
-void setError(int oneDay, int shift);
-void mostNightshift();
-int chooseOutputType();
 
 int main()
 {
 	int output = 0;
 	
+	//Fancy Startupscreen - pretend to be loading something
+	system("clear");
 	printf("SchedulePlanMaster 2000 is starting up...");
 	fflush(stdout);
 	sleep(1);
@@ -52,11 +54,12 @@ int main()
 	printSchedule();
 
 	mostNightshift();
+	
 	output = chooseOutputType();
 
 	saveFile(output);
 
-    	system( "read -n 1 -s -p \"Press any Key...\"" );
+    system( "read -n 1 -s -p \"Press any Key...\"" );
     	
 	printf("\n\n");
 	
@@ -68,25 +71,25 @@ void mainMenu()
 {
 	char choice[3] = "";
 	
-    	system("clear");
+    system("clear");
     
 	printf("Select mode: \n");
 
-	printf("Manual\t(1) \n");
+	printf("Manual\t(1)\n");
 	printf("Load\t(2)\n");
-	printf("Exit\t(3) \n");
+	printf("Exit\t(3)\n");
 	
 	fgets(choice, 2, stdin);
 
-	if ((strlen(choice)>0) && (choice[strlen (choice) - 1] == '\n')){
-		choice[strlen (choice) - 1] = '\0';
+	if ((strlen(choice)>0) && (choice[strlen(choice) - 1] == '\n')){
+		choice[strlen(choice) - 1] = '\0';
 	}
+	
 
-    	fpurge(stdin);
-    
-    	system("clear");
-    
-	switch (choice[0]) {
+	fpurge(stdin);
+	system("clear");
+	
+	switch(choice[0]) {
 	case '1':
 		createPlan();
 		break;
@@ -94,73 +97,20 @@ void mainMenu()
 		loadFile();
 		break;
 	case '3':
+	default:
 		exit(0);
 	}
 	
 	system("clear");
 }
 
-int loadFile()
-{
-	FILE *inputFile;
-
-	char *buf = malloc(MAX_CHAR_LEN);
-	char *tmp;
-
-	if(buf == NULL) {
-		printf ("Memory Error\n");
-		return 1;
-	}
-
-	if((inputFile = fopen( "input.dat", "r" )) == NULL) {
-		printf( "File Error.\n" );
-		return 1;
-	}
-
-	int i = 0;
-	while(fgets(buf, 255, inputFile) != NULL) {
-		
-		if(ferror(inputFile)) {
-			break;
-		}
-		
-		if((strlen(buf)>0) && (buf[strlen (buf) - 1] == '\n')){
-			buf[strlen (buf) - 1] = '\0';
-		}
-
-		tmp = strtok(buf, ";");
-		strcpy(entryArray[i].sCaretaker, tmp);
-
-		tmp = strtok(NULL, ";");
-		strcpy(entryArray[i].sQualification, tmp);
-
-		tmp = strtok(NULL, ";");
-		entryArray[i].sShift = atoi(tmp);
-
-		tmp = strtok(NULL, ";");
-		entryArray[i].day = atoi(tmp);
-
-		tmp = strtok(NULL, ";");
-		entryArray[i].sError = atoi(tmp);
-
-		i++;
-
-	}
-
-	free(buf);
-	fclose(inputFile);
-	
-	system("clear");
-	return 0;
-}
-
 
 void createPlan()
 {
 	int counter = 0;
-	int abbruch = 0;
+	int cancel = 0;
 	
-	while(abbruch != 1) {
+	while(cancel != 1) {
 		char tmp[MAX_CHAR_LEN];
 		
 		printf("Enter Employees name: \n");
@@ -172,7 +122,7 @@ void createPlan()
 
 		strcpy(entryArray[counter].sCaretaker, tmp);
 
-        	fpurge(stdin);
+        fpurge(stdin);
 		
 		system("clear");
         
@@ -180,6 +130,7 @@ void createPlan()
 		printf("Trainee\t\t(1)\n");
 		printf("Assistant\t(2)\n");
 		printf("Degree\t\t(3)\n");
+		
 		fgets(tmp, 20, stdin);
 
 		if((strlen(tmp)>0) && (tmp[strlen(tmp) - 1] == '\n')){
@@ -202,7 +153,7 @@ void createPlan()
 
 		strcpy(entryArray[counter].sQualification, tmp);
 
-        	fpurge(stdin);
+        fpurge(stdin);
         
 		system("clear");
 		
@@ -212,13 +163,13 @@ void createPlan()
 		printf("Nightshift\t(3)\n");
 		fgets(tmp, 3, stdin);
 
-		if((strlen(tmp)>0) && (tmp[strlen(tmp) - 1] == '\n')){
+		if((strlen(tmp) > 0) && (tmp[strlen(tmp) - 1] == '\n')){
 			tmp[strlen(tmp) - 1] = '\0';
 		}
 		
 	
 		
-		switch (tmp[0]) {
+		switch(tmp[0]) {
 		      break;
 		    case '2':
 		      strcpy(tmp, "1");
@@ -231,9 +182,9 @@ void createPlan()
 		      strcpy(tmp, "0");
 		}
 
-		entryArray[counter].sShift= atoi(tmp);
+		entryArray[counter].sShift = atoi(tmp);
 
-        	fpurge(stdin);
+        fpurge(stdin);
         
 		system("clear");
         	
@@ -253,7 +204,7 @@ void createPlan()
 		}
 		
 		
-		switch (tmp[0]) {
+		switch (tmp[0]){
 		     case '2':
 		       strcpy(tmp, "1");
 		       break;
@@ -288,23 +239,22 @@ void createPlan()
 			tmp[strlen(tmp) - 1] = '\0';
 		}
 			
-		switch(tmp[0])
-		{
+		switch(tmp[0]){
 			case 'Y':
 			case 'y':
-				abbruch = 0; 
+				cancel = 0; 
 				counter++;
 			break;
 			case 'N': 
 			case 'n':
-				abbruch = 1; 
+				cancel = 1; 
 			break;
 			default: 
-				abbruch = 0;
+				cancel = 0;
 				counter++;
 		}
 
-        	fpurge(stdin);
+        fpurge(stdin);
         
 		system("clear");
 	}
@@ -318,13 +268,13 @@ void printSchedule()
 	printf("Employee name: \t Qualification: \t Shift: \tWeekday: \tStatus: \n");
 
 
-	for (i = 0; i <= sizeof(entryArray); i++) {
+	for (i = 0; i <= sizeof(entryArray); i++){
 		if (strlen(entryArray[i].sCaretaker) != 0)
 			printf("%s\t\t%s\t%s\t%s\t%s \n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
 		else break;
 	}
 
-    system("clear");
+    system("\n\n");
 }
 
 void checkSchedule()
@@ -349,7 +299,7 @@ void checkSchedule()
 				}else break;
 			}
 
-			if (hasDegree == 0) {
+			if (hasDegree == 0){
 				setError(indexDay, indexShift);
 			}
 
@@ -364,69 +314,15 @@ void setError(int oneDay, int shift)
 {
 	int i;
 
-	for (i = 0; i <= sizeof(entryArray); i++) {
-		if (strlen(entryArray[i].sCaretaker) != 0) {
-			if(entryArray[i].day == oneDay && entryArray[i].sShift == shift) {
+	for (i = 0; i <= sizeof(entryArray); i++){
+		if (strlen(entryArray[i].sCaretaker) != 0){
+			if(entryArray[i].day == oneDay && entryArray[i].sShift == shift){
 				entryArray[i].sError = 1;
 			}
-		} else break;
+		}else break;
 	}
 }
 
-int  saveFile(int typ)
-{
-	FILE *outFile;
-	char filename[20];
-
-	switch(typ) {
-	case 1:
-		strcpy( filename, "output.txt");
-		break;
-	case 2:
-		strcpy( filename, "output.html");
-		break;
-	default:
-		strcpy( filename, "output.dat");
-	}
-
-
-	if((outFile = fopen(filename , "w" )) == NULL) {
-		printf( "File could not be opened.\n" );
-		return 1;
-	}
-
-	// Generate HTMLheader
-	if(typ == 2){
-		fprintf(outFile, "<!DOCTYPE html><html><body><h1>Shiftenplan Web</h1><table border='1'>");
-		fprintf(outFile, "<tr><td>Name des Pflegepersonals:</td><td>Qualification:</td><td>Shift:</td><td>Weekday:</td><td>Warning:</td></tr>");
-	}
-
-
-	int i;
-	for(i = 0; i < 64; i++){
-		if(strlen(entryArray[i].sCaretaker) != 0) {
-			switch (typ){
-			//Generate html
-			case 2: 
-				fprintf(outFile, "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
-				break;
-			//Generate Text/CSV
-			case 1:
-			default:
-				fprintf(outFile, "%s\t\t%s\t%s\t%s\t%s\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
-			}
-		}
-
-	}
-	
-	//Generate HTML End
-	if(typ == 2) {
-		fprintf(outFile, "</table></body></html>");
-	}
-	
-	fclose(outFile);
-	return 0;
-}
 
 void mostNightshift()
 {
@@ -438,8 +334,7 @@ void mostNightshift()
 	for(i = 0; i <= sizeof(entryArray); i++){
 		if(strlen(entryArray[i].sCaretaker) != 0)
 		{
-			if(entryArray[i].sShift == 2)
-			{
+			if(entryArray[i].sShift == 2){
 				entryArray[i].nightshift++;
 			}
 		}else break;
@@ -479,9 +374,9 @@ int chooseOutputType()
 {
 	char choice[3] = "";
 
-	printf("save to txt  (1) \n");
-	printf("save as html (2)\n");
-	printf("Quit (3) \n");
+	printf("Save to txt\t(1) \n");
+	printf("Save as html\t(2)\n");
+	printf("Quit\t\t(3) \n");
 
 	printf("Enter: ");
 	fgets(choice, 2, stdin);
@@ -502,4 +397,111 @@ int chooseOutputType()
 	default:
 		return 99;
 	}
+}
+
+
+int  saveFile(int typ)
+{
+	FILE *outFile;
+	char filename[20];
+
+	switch(typ) {
+	case 2:
+		strcpy( filename, "output.html");
+		break;
+	case 1:
+	default:
+		strcpy( filename, "data.txt");
+	}
+
+
+	if((outFile = fopen(filename , "w" )) == NULL) {
+		printf( "File could not be opened.\n" );
+		return 1;
+	}
+
+	// Generate HTML header
+	if(typ == 2){
+		fprintf(outFile, "<!DOCTYPE html><html><body><h1>Shiftenplan Web</h1><table border='1'><tr><td>Name des Pflegepersonals:</td><td>Qualification:</td><td>Shift:</td><td>Weekday:</td><td>Warning:</td></tr>");
+	}
+
+
+	int i;
+	for(i = 0; i < 64; i++){
+		if(strlen(entryArray[i].sCaretaker) != 0) {
+			switch (typ){
+			//Generate html
+			case 2: 
+				fprintf(outFile, "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
+				break;
+			//Generate Text/CSV
+			case 1:
+			default:
+				fprintf(outFile, "%s\t\t%s\t%s\t%s\t%s\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
+			}
+		}
+
+	}
+	
+	//Generate HTML End
+	if(typ == 2){
+		fprintf(outFile, "</table></body></html>");
+	}
+	
+	fclose(outFile);
+	return 0;
+}
+
+
+int loadFile()
+{
+	FILE *inputFile;
+
+	char *buf = malloc(MAX_CHAR_LEN);
+	char *tmp;
+	int i = 0;
+	
+	if(buf == NULL){
+		printf ("Memory Error\n");
+		return 1;
+	}
+	
+	if((inputFile = fopen("data.txt", "r")) == NULL){
+		printf("File Error.\n"); 
+		return 1;
+	}
+	
+	while(fgets(buf, MAX_CHAR_LEN, inputFile) != NULL){
+		
+		if(ferror(inputFile)){
+			break;
+		}
+		
+		if((strlen(buf)>0) && (buf[strlen(buf) - 1] == '\n')){
+			buf[strlen(buf) - 1] = '\0';
+		}
+
+		tmp = strtok(buf, ";");
+		strcpy(entryArray[i].sCaretaker, tmp);
+
+		tmp = strtok(NULL, ";");
+		strcpy(entryArray[i].sQualification, tmp);
+
+		tmp = strtok(NULL, ";");
+		entryArray[i].sShift = atoi(tmp);
+
+		tmp = strtok(NULL, ";");
+		entryArray[i].day = atoi(tmp);
+
+		tmp = strtok(NULL, ";");
+		entryArray[i].sError = atoi(tmp);
+
+		i++;
+
+	}
+
+	free(buf);
+	fclose(inputFile);
+	
+	return 0;
 }
