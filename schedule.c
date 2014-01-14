@@ -433,7 +433,6 @@ int  saveFile(int typ)
 				fprintf(outFile, "%s\t\t%s\t%s\t%s\t%s\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
 			}
 		}
-		fprintf(outFile, "\n");
 
 	}
 	if(typ == 2) {
