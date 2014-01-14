@@ -58,7 +58,7 @@ int main()
 
     	system( "read -n 1 -s -p \"Press any Key...\"" );
     	
-	printf("\n");
+	printf("\n\n");
 	
 	return 0;
 }
@@ -330,34 +330,30 @@ void printSchedule()
 void checkSchedule()
 {
 	printf("Checking plan. Please wait! ... \n");
-	/*
-	 * Here we should check if for any day and shift there must be at least one "Degree" person.
-	*/
+	
 	//int size = 0;
-	int i, j, k;
-	int dplVorhanden = 0;
+	int index, indexDay, indexShift;
+	int hasDegree = 0;
 
-	//Check per day
-	for( j = 0; j<= 6; j++) {
-		//Check per shift
-		for( k = 0; k<= 2; k++) {
-			for (i = 0; i <= sizeof(entryArray); i++) {
-				if (strlen(entryArray[i].sCaretaker) != 0) {
-					if(entryArray[i].day == j && entryArray[i].sShift == k) {
-
-						if(strcmp(entryArray[i].sQualification, "Degree") == 0) {
-							dplVorhanden = 1;
+	//Check every day
+	for( indexDay = 0; indexDay<= 6; indexDay++) {
+		//Check every shift
+		for( indexShift = 0; indexShift<= 2; indexShift++) {
+			for(index = 0; index <= sizeof(entryArray); index++) {
+				if(strlen(entryArray[index].sCaretaker) != 0){
+					if(entryArray[index].day == indexDay && entryArray[index].sShift == indexShift){
+						if(strcmp(entryArray[index].sQualification, "Degree") == 0){
+							hasDegree = 1;
 						}
-
 					}
 				}else break;
 			}
 
-			if (dplVorhanden == 0) {
-				setError(j, k);
+			if (hasDegree == 0) {
+				setError(indexDay, indexShift);
 			}
 
-			dplVorhanden = 0;
+			hasDegree = 0;
 		}
 
 	}
@@ -379,7 +375,6 @@ void setError(int oneDay, int shift)
 
 int  saveFile(int typ)
 {
-	/* FileStream for the Library File */
 	FILE *outFile;
 	char filename[20];
 
@@ -400,7 +395,7 @@ int  saveFile(int typ)
 		return 1;
 	}
 
-	// Wenn ein HTML File generiert wird
+	// Generate HTMLheader
 	if(typ == 2){
 		fprintf(outFile, "<!DOCTYPE html><html><body><h1>Shiftenplan Web</h1><table border='1'>");
 		fprintf(outFile, "<tr><td>Name des Pflegepersonals:</td><td>Qualification:</td><td>Shift:</td><td>Weekday:</td><td>Warning:</td></tr>");
@@ -409,15 +404,14 @@ int  saveFile(int typ)
 
 	int i;
 	for(i = 0; i < 64; i++){
-		//printf("%lu",strlen(entryArray[i].sCaretaker));
 		if(strlen(entryArray[i].sCaretaker) != 0) {
 			switch (typ){
-			case 1:
-				fprintf(outFile, "%s\t\t%s\t%s\t%s\t%s\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
-				break;
+			//Generate html
 			case 2: 
 				fprintf(outFile, "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
 				break;
+			//Generate Text/CSV
+			case 1:
 			default:
 				fprintf(outFile, "%s\t\t%s\t%s\t%s\t%s\n", entryArray[i].sCaretaker , entryArray[i].sQualification, shiftStrinf[entryArray[i].sShift] , dayNames[entryArray[i].day], errorString[entryArray[i].sError]);
 			}
@@ -425,6 +419,7 @@ int  saveFile(int typ)
 
 	}
 	
+	//Generate HTML End
 	if(typ == 2) {
 		fprintf(outFile, "</table></body></html>");
 	}
@@ -476,6 +471,7 @@ void mostNightshift()
 		}else break;
 	}
 	countMost--;
+	
 	printf("The most Nightshifts, has %s with %i times.\n", *sMost, countMost );
 }
 
@@ -483,13 +479,11 @@ int chooseOutputType()
 {
 	char choice[3] = "";
 
-	printf("Please choose the output type: \n");
-
-	printf("txt  (1) \n");
-	printf("html (2)\n");
+	printf("save to txt  (1) \n");
+	printf("save as html (2)\n");
 	printf("Quit (3) \n");
 
-	printf("Auswahl: ");
+	printf("Enter: ");
 	fgets(choice, 2, stdin);
 
 	if((strlen(choice)>0) && (choice[strlen (choice) - 1] == '\n')){
