@@ -414,7 +414,7 @@ int  saveFile(int typ)
 
 	int i;
 	for(i = 0; i < 64; i++) {
-		printf("%lu",strlen(entryArray[i].sCaretaker));
+		//printf("%lu",strlen(entryArray[i].sCaretaker));
 		if(strlen(entryArray[i].sCaretaker) != 0) {
 			switch (typ) {
 				//TXT
