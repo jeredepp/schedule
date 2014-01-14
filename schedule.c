@@ -217,7 +217,8 @@ void createPlan()
 		}
 		
 		if(tmp[0]>=1 && tmp[0]<=3){
-			strcpy(tmp, tmp[0]);
+			int tmpHelp = tmp[0]-1;
+			strcpy(tmp, tmpHelp);
 		}else{
 			strcpy(tmp, "0");
 		}
@@ -244,7 +245,8 @@ void createPlan()
 		}
 		
 		if(tmp[0]>=1 && tmp[0]<=7){
-			strcpy(tmp-1, "0");
+			int tmpHelp = tmp[0]-1;
+			strcpy(tmp, tmpHelp);
 		}else{
 			strcpy(tmp, "0");
 		}
